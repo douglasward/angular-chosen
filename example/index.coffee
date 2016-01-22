@@ -1,8 +1,5 @@
+# out: ./index.js
 angular.module('chosenExampleApp', ['localytics.directives'])
-
-.config(['$parseProvider', ($parseProvider) ->
-  $parseProvider.unwrapPromises(true)
-])
 
 .controller('IndexCtrl', ['$scope', '$q', '$timeout', ($scope, $q, $timeout) ->
 
