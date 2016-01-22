@@ -1,3 +1,4 @@
+# out: ../chosen.js
 angular.module('localytics.directives', [])
 
 angular.module('localytics.directives').directive 'chosen', ['$timeout', ($timeout) ->
@@ -69,11 +70,15 @@ angular.module('localytics.directives').directive 'chosen', ['$timeout', ($timeo
       element.attr('data-placeholder', chosen.results_none_found).attr('disabled', true).trigger('chosen:updated')
 
     # Watch the underlying ngModel for updates and trigger an update when they occur.
+    # TODO Fix this
     if ngModel
-      origRender = ngModel.$render
-      ngModel.$render = ->
-        origRender()
-        initOrUpdate()
+      # Wait until DOM has been loaded and selectPostLink has run before initiating
+      $timeout(->
+        origRender = ngModel.$render
+        ngModel.$render = ->
+          origRender()
+          initOrUpdate()
+      )
 
       # This is basically taken from angular ngOptions source.  ngModel watches reference, not value,
       # so when values are added or removed from array ngModels, $render won't be fired.
