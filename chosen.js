@@ -29,9 +29,9 @@
       return {
         restrict: 'A',
         require: '?ngModel',
-        terminal: true,
+        priority: 1,
         link: function(scope, element, attr, ngModel) {
-          var chosen, defaultText, disableWithMessage, empty, initOrUpdate, match, options, removeEmptyMessage, startLoading, stopLoading, valuesExpr, viewWatch;
+          var chosen, defaultText, disableWithMessage, empty, initOrUpdate, match, options, origRender, removeEmptyMessage, startLoading, stopLoading, valuesExpr, viewWatch;
           element.addClass('localytics-chosen');
           options = scope.$eval(attr.chosen) || {};
           angular.forEach(attr, function(value, key) {
@@ -65,14 +65,11 @@
             return element.attr('data-placeholder', chosen.results_none_found).attr('disabled', true).trigger('chosen:updated');
           };
           if (ngModel) {
-            $timeout(function() {
-              var origRender;
-              origRender = ngModel.$render;
-              return ngModel.$render = function() {
-                origRender();
-                return initOrUpdate();
-              };
-            });
+            origRender = ngModel.$render;
+            ngModel.$render = function() {
+              origRender();
+              return initOrUpdate();
+            };
             if (attr.multiple) {
               viewWatch = function() {
                 return ngModel.$viewValue;
